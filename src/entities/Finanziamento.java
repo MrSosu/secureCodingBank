@@ -1,5 +1,8 @@
 package entities;
 
+import exceptions.FinanziamentoMismatchException;
+import validators.Validator;
+
 public class Finanziamento {
 
     private static int idCounter = 0;
@@ -10,7 +13,10 @@ public class Finanziamento {
     private int id_utente;
     private int id_conto;
 
-    public Finanziamento(double money, double tasso, int durata, int id_utente, int id_conto) {
+    public Finanziamento(double money, double tasso, int durata, int id_utente, int id_conto) throws FinanziamentoMismatchException {
+        if (!Validator.validateFinanziamento(money, tasso, durata)) {
+            throw new FinanziamentoMismatchException();
+        }
         this.id = idCounter++;
         this.money = money;
         this.tasso = tasso;
@@ -23,7 +29,8 @@ public class Finanziamento {
         return money;
     }
 
-    public void setMoney(double money) {
+    public void setMoney(double money) throws FinanziamentoMismatchException {
+        if (money < 0) throw new FinanziamentoMismatchException();
         this.money = money;
     }
 
@@ -31,7 +38,8 @@ public class Finanziamento {
         return tasso;
     }
 
-    public void setTasso(double tasso) {
+    public void setTasso(double tasso) throws FinanziamentoMismatchException {
+        if (tasso < 0) throw new FinanziamentoMismatchException();
         this.tasso = tasso;
     }
 
@@ -39,7 +47,8 @@ public class Finanziamento {
         return durata;
     }
 
-    public void setDurata(int durata) {
+    public void setDurata(int durata) throws FinanziamentoMismatchException {
+        if (durata < 0) throw new FinanziamentoMismatchException();
         this.durata = durata;
     }
 

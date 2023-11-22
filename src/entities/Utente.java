@@ -1,8 +1,11 @@
 package entities;
 
+import exceptions.UtenteMismatchException;
 import validators.Validator;
 
+import java.io.IOException;
 import java.time.LocalDate;
+import java.util.InputMismatchException;
 import java.util.Set;
 
 public class Utente {
@@ -19,25 +22,24 @@ public class Utente {
     private String tel;
 
     public Utente(String nome, String cognome, LocalDate dataNascita,
-                  String indirizzo, String comune, String codiceFiscale, String email, String tel) {
-        Validator.validateUtente(dataNascita, comune, codiceFiscale, email, tel);
-        this.id = idCounter++;
-        this.nome = nome;
-        this.cognome = cognome;
-        this.dataNascita = dataNascita;
-        this.indirizzo = indirizzo;
-        this.comune = comune;
-        this.codiceFiscale = codiceFiscale;
-        this.email = email;
-        this.tel = tel;
+                  String indirizzo, String comune, String codiceFiscale, String email, String tel) throws IOException, UtenteMismatchException {
+            if (!Validator.validateUtente(dataNascita, comune, codiceFiscale, email, tel)) {
+                System.out.println("non valido!");
+                throw new UtenteMismatchException();
+            }
+            this.id = idCounter++;
+            this.nome = nome;
+            this.cognome = cognome;
+            this.dataNascita = dataNascita;
+            this.indirizzo = indirizzo;
+            this.comune = comune;
+            this.codiceFiscale = codiceFiscale;
+            this.email = email;
+            this.tel = tel;
     }
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getNome() {
@@ -60,7 +62,10 @@ public class Utente {
         return dataNascita;
     }
 
-    public void setDataNascita(LocalDate dataNascita) {
+    public void setDataNascita(LocalDate dataNascita) throws UtenteMismatchException {
+        if (!Validator.validateDataNascita(dataNascita)) {
+            throw new UtenteMismatchException();
+        }
         this.dataNascita = dataNascita;
     }
 
@@ -76,7 +81,10 @@ public class Utente {
         return comune;
     }
 
-    public void setComune(String comune) {
+    public void setComune(String comune) throws UtenteMismatchException, IOException {
+        if (!Validator.validateComune(comune)) {
+            throw new UtenteMismatchException();
+        }
         this.comune = comune;
     }
 
@@ -84,7 +92,10 @@ public class Utente {
         return codiceFiscale;
     }
 
-    public void setCodiceFiscale(String codiceFiscale) {
+    public void setCodiceFiscale(String codiceFiscale) throws UtenteMismatchException {
+        if (!Validator.validateCodiceFiscale(codiceFiscale)) {
+            throw new UtenteMismatchException();
+        }
         this.codiceFiscale = codiceFiscale;
     }
 
@@ -92,7 +103,10 @@ public class Utente {
         return email;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(String email) throws UtenteMismatchException {
+        if (!Validator.validateEmail(email)) {
+            throw new UtenteMismatchException();
+        }
         this.email = email;
     }
 
@@ -100,7 +114,10 @@ public class Utente {
         return tel;
     }
 
-    public void setTel(String tel) {
+    public void setTel(String tel) throws UtenteMismatchException {
+        if (!Validator.validateTelefono(tel)) {
+            throw new UtenteMismatchException();
+        }
         this.tel = tel;
     }
 }

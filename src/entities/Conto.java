@@ -1,5 +1,7 @@
 package entities;
 
+import exceptions.ContoMismatchException;
+import exceptions.FinanziamentoMismatchException;
 import validators.Validator;
 
 import java.time.LocalDate;
@@ -12,9 +14,11 @@ public class Conto {
     private double money;
     private final LocalDate sottoscrizione;
 
-    public Conto(double costo, double money) {
+    public Conto(double costo, double money) throws ContoMismatchException {
+        if (!Validator.validateConto(costo, money)) {
+            throw new ContoMismatchException();
+        }
         this.id = idCounter++;
-        Validator.validateConto(costo, money);
         this.costo = costo;
         this.money = money;
         this.sottoscrizione = LocalDate.now();
@@ -24,15 +28,14 @@ public class Conto {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public double getCosto() {
         return costo;
     }
 
-    public void setCosto(double costo) {
+    public void setCosto(double costo) throws ContoMismatchException {
+        if (costo < 0) {
+            throw new ContoMismatchException();
+        }
         this.costo = costo;
     }
 
@@ -40,7 +43,8 @@ public class Conto {
         return money;
     }
 
-    public void setMoney(double money) {
+    public void setMoney(double money) throws FinanziamentoMismatchException {
+        if (money < 0) throw new FinanziamentoMismatchException();
         this.money = money;
     }
 
