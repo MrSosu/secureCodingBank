@@ -1,12 +1,15 @@
 package entities;
 
+import database.Database;
 import exceptions.UtenteMismatchException;
-import validators.Validator;
+import services.SignatureService;
+import services.Validator;
 
 import java.io.IOException;
+import java.security.KeyPair;
 import java.time.LocalDate;
-import java.util.InputMismatchException;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Utente {
 
@@ -20,6 +23,8 @@ public class Utente {
     private String codiceFiscale;
     private String email;
     private String tel;
+    private final KeyPair keyPair;
+    private List<Integer> conti_utente;
 
     public Utente(String nome, String cognome, LocalDate dataNascita,
                   String indirizzo, String comune, String codiceFiscale, String email, String tel) throws IOException, UtenteMismatchException {
@@ -36,6 +41,8 @@ public class Utente {
             this.codiceFiscale = codiceFiscale;
             this.email = email;
             this.tel = tel;
+            this.keyPair = SignatureService.keyPair();
+            this.conti_utente = new ArrayList<>();
     }
 
     public int getId() {
@@ -120,4 +127,51 @@ public class Utente {
         }
         this.tel = tel;
     }
+
+    public List<Integer> getConti_utente() {
+        return conti_utente;
+    }
+
+    public KeyPair getKeyPair() {
+        return keyPair;
+    }
+
+    // funzionalità
+
+    public void addConto(Integer id_conto) { conti_utente.add(id_conto); }
+
+    /**
+     * Questo metodo permette all'utente di effettuare una transazione da un
+     * suo conto ad un altro conto (anche appartanente sempre a lui).
+     * @param money il quantitativo di denaro spostato
+     * @param id_conto_mittente l'id del conto del mittente
+     * @param id_conto_destinatario l'id del conto del destinatario
+     * @return la transazione
+     */
+    public Transazione createTransaction(double money, int id_conto_mittente, int id_conto_destinatario) {
+        // input validation
+        if (money <= 0) {
+            throw new IllegalArgumentException("la transazione non può essere senza denaro!");
+        }
+        if (!Database.getConti().containsKey(id_conto_mittente) ||
+                !Database.getConti().containsKey(id_conto_destinatario)) {
+            throw new NullPointerException("Il conto non esiste!");
+        }
+        if (!conti_utente.contains(id_conto_mittente)) {
+            throw new IllegalArgumentException("A ladro, il conto non è tuo!");
+        }
+        Conto conto_mittente = Database.getConti().get(id_conto_mittente);
+        if (conto_mittente.getMoney() < money) {
+            throw new IllegalArgumentException("Il conto non ha abbastanza denaro");
+        }
+        // logica
+        Conto conto_destinatario = Database.getConti().get(id_conto_destinatario);
+        conto_destinatario.addMoney(money);
+        conto_mittente.subtractMoney(money);
+        // creo la transazione
+        Transazione t = new Transazione(id_conto_mittente, id_conto_destinatario, this.id, money);
+        Database.addTransazione(t);
+        return t;
+    }
+
 }

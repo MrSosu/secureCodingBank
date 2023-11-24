@@ -10,13 +10,15 @@ public class Transazione {
     private final int id_mittente; // ---> conto
     private final int id_destinatario; // ---> conto
     private final int id_utente; // ---> utente
+    private final double money;
 
-    public Transazione(int id_mittente, int id_destinatario, int id_utente) {
+    public Transazione(int id_mittente, int id_destinatario, int id_utente, double money) {
         this.id = idCounter++;
         this.timestamp = LocalDateTime.now();
         this.id_mittente = id_mittente;
         this.id_destinatario = id_destinatario;
         this.id_utente = id_utente;
+        this.money = money;
     }
 
     public int getId() {
@@ -41,5 +43,17 @@ public class Transazione {
 
     public int getId_utente() {
         return id_utente;
+    }
+
+    @Override
+    public String toString() {
+        return "Transazione{" +
+                "id=" + id +
+                ", timestamp=" + timestamp +
+                ", id_mittente=" + id_mittente +
+                ", id_destinatario=" + id_destinatario +
+                ", id_utente=" + id_utente +
+                ", money=" + money +
+                '}';
     }
 }

@@ -1,4 +1,4 @@
-package validators;
+package services;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -47,8 +47,7 @@ public class Validator {
      * @return true se il codice fiscale è valido secondo quanto detto sopra
      */
     public static boolean validateCodiceFiscale(String codiceFiscale) {
-        // return codiceFiscale.matches("^[A-Z]{6}[0-9]{2}[A-Z][0-9]{2}[A-Z][0-9]{3}[A-Z]$");
-        return codiceFiscale.matches("[A-Z0-9]{16}");
+        return codiceFiscale.matches("^[A-Z]{6}[0-9]{2}[A-Z][0-9]{2}[A-Z][0-9]{3}[A-Z]$");
     }
 
     public static boolean validateEmail(String email) {
@@ -59,8 +58,8 @@ public class Validator {
         return telefono.matches("^((00|\\+)[0-9]{2,3}[\\. ]??)??3\\d{2}[\\. ]??\\d{6,7}$");
     }
 
-    public static boolean validateConto(double costo, double money) {
-        return costo >= 0 && money >= 0;
+    public static boolean validateConto(double costo, double money, List<Integer> owners) {
+        return costo >= 0 && money >= 0 && !owners.isEmpty();
     }
 
     public static boolean validateFinanziamento(double money, double tasso, int durata) {

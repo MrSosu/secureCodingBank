@@ -2,9 +2,10 @@ package entities;
 
 import exceptions.ContoMismatchException;
 import exceptions.FinanziamentoMismatchException;
-import validators.Validator;
+import services.Validator;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class Conto {
 
@@ -13,15 +14,17 @@ public class Conto {
     private double costo;
     private double money;
     private final LocalDate sottoscrizione;
+    private List<Integer> owners;
 
-    public Conto(double costo, double money) throws ContoMismatchException {
-        if (!Validator.validateConto(costo, money)) {
+    public Conto(double costo, double money, List<Integer> owners) throws ContoMismatchException {
+        if (!Validator.validateConto(costo, money, owners)) {
             throw new ContoMismatchException();
         }
         this.id = idCounter++;
         this.costo = costo;
         this.money = money;
         this.sottoscrizione = LocalDate.now();
+        this.owners = owners;
     }
 
     public int getId() {
@@ -51,4 +54,24 @@ public class Conto {
     public LocalDate getSottoscrizione() {
         return sottoscrizione;
     }
+
+    public List<Integer> getOwners() {
+        return owners;
+    }
+
+    public void setOwners(List<Integer> owners) {
+        this.owners = owners;
+    }
+
+    // funzionalità
+    public void addMoney(double money) {
+        if (money <= 0) { throw new IllegalArgumentException("non posso aggiungere soldi che non ci sono!"); }
+        this.money += money;
+    }
+
+    public void subtractMoney(double money) {
+        if (money <= 0) { throw new IllegalArgumentException("non posso togliere soldi che non ci sono!"); }
+        this.money -= money;
+    }
+
 }

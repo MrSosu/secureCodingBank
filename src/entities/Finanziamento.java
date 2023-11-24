@@ -1,7 +1,7 @@
 package entities;
 
 import exceptions.FinanziamentoMismatchException;
-import validators.Validator;
+import services.Validator;
 
 public class Finanziamento {
 
