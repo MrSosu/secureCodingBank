@@ -1,5 +1,6 @@
 package entities;
 
+import java.security.Signature;
 import java.time.LocalDateTime;
 
 public class Transazione {
@@ -10,6 +11,7 @@ public class Transazione {
     private final int id_mittente; // ---> conto
     private final int id_destinatario; // ---> conto
     private final int id_utente; // ---> utente
+    private byte[] signature;
     private final double money;
 
     public Transazione(int id_mittente, int id_destinatario, int id_utente, double money) {
@@ -45,6 +47,14 @@ public class Transazione {
         return id_utente;
     }
 
+    public byte[] getSignature() {
+        return signature;
+    }
+
+    public void setSignature(byte[] signature) {
+        this.signature = signature;
+    }
+
     @Override
     public String toString() {
         return "Transazione{" +
@@ -53,6 +63,7 @@ public class Transazione {
                 ", id_mittente=" + id_mittente +
                 ", id_destinatario=" + id_destinatario +
                 ", id_utente=" + id_utente +
+                ", signature=" + signature +
                 ", money=" + money +
                 '}';
     }

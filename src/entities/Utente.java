@@ -6,7 +6,12 @@ import services.SignatureService;
 import services.Validator;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
 import java.security.KeyPair;
+import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -148,7 +153,7 @@ public class Utente {
      * @param id_conto_destinatario l'id del conto del destinatario
      * @return la transazione
      */
-    public Transazione createTransaction(double money, int id_conto_mittente, int id_conto_destinatario) {
+    public Transazione createTransaction(double money, int id_conto_mittente, int id_conto_destinatario) throws UnsupportedEncodingException, InvalidKeyException, SignatureException, NoSuchAlgorithmException {
         // input validation
         if (money <= 0) {
             throw new IllegalArgumentException("la transazione non può essere senza denaro!");
@@ -168,8 +173,12 @@ public class Utente {
         Conto conto_destinatario = Database.getConti().get(id_conto_destinatario);
         conto_destinatario.addMoney(money);
         conto_mittente.subtractMoney(money);
-        // creo la transazione
+        // creo la transazione, compresa di firma
+
         Transazione t = new Transazione(id_conto_mittente, id_conto_destinatario, this.id, money);
+        String str_transaction = String.valueOf(t.hashCode());
+        System.out.println(str_transaction);
+        t.setSignature(SignatureService.sign(str_transaction.getBytes(), keyPair.getPrivate()));
         Database.addTransazione(t);
         return t;
     }

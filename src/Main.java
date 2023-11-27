@@ -4,15 +4,19 @@ import entities.Transazione;
 import entities.Utente;
 import exceptions.ContoMismatchException;
 import exceptions.UtenteMismatchException;
+import services.SignatureService;
 
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException, UtenteMismatchException, ContoMismatchException {
+    public static void main(String[] args) throws IOException, UtenteMismatchException, ContoMismatchException, SignatureException, InvalidKeyException, NoSuchAlgorithmException {
         /*System.out.println(Validator.validateComune("Roma"));
         System.out.println(Validator.validateComune("Pippo"));
         System.out.println(Validator.validateCodiceFiscale("PCGAAA87SD"));
@@ -35,6 +39,7 @@ public class Main {
         Database.addConto(c2);
         Transazione t = u.createTransaction(150, c1.getId(), c2.getId());
         System.out.println(t);
+        System.out.println("La transazione è verificata? " + SignatureService.verifyTransaction(t, t.getSignature()));
         System.out.println("Il conto di u adesso ha: " + c1.getMoney());
         System.out.println("Il conto di u2 adesso ha: " + c2.getMoney());
         System.out.println(u.getKeyPair());
