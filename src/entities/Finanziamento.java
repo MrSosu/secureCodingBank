@@ -1,7 +1,7 @@
 package entities;
 
 import exceptions.FinanziamentoMismatchException;
-import services.Validator;
+import services.ValidatorService;
 
 public class Finanziamento {
 
@@ -14,7 +14,7 @@ public class Finanziamento {
     private int id_conto;
 
     public Finanziamento(double money, double tasso, int durata, int id_utente, int id_conto) throws FinanziamentoMismatchException {
-        if (!Validator.validateFinanziamento(money, tasso, durata)) {
+        if (!ValidatorService.validateFinanziamento(money, tasso, durata)) {
             throw new FinanziamentoMismatchException();
         }
         this.id = idCounter++;

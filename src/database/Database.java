@@ -34,4 +34,8 @@ public class Database {
     public static Map<Integer, Conto> getConti() {
         return conti;
     }
+
+    public static Utente findUserByEmail(String email) {
+        return utenti.values().stream().filter(u -> u.getEmail().equals(email)).toList().get(0);
+    }
 }

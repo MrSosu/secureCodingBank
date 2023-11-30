@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Validator {
+public class ValidatorService {
 
     /**
      * Questo metodo valida gli input per il costruttore dell'utente

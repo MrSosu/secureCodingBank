@@ -2,7 +2,7 @@ package entities;
 
 import exceptions.ContoMismatchException;
 import exceptions.FinanziamentoMismatchException;
-import services.Validator;
+import services.ValidatorService;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -17,7 +17,7 @@ public class Conto {
     private List<Integer> owners;
 
     public Conto(double costo, double money, List<Integer> owners) throws ContoMismatchException {
-        if (!Validator.validateConto(costo, money, owners)) {
+        if (!ValidatorService.validateConto(costo, money, owners)) {
             throw new ContoMismatchException();
         }
         this.id = idCounter++;
