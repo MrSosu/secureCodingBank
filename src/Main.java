@@ -17,7 +17,7 @@ import java.util.List;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException, UtenteMismatchException, ContoMismatchException, SignatureException, InvalidKeyException, NoSuchAlgorithmException {
+    public static void main(String[] args) throws IOException, UtenteMismatchException, ContoMismatchException, SignatureException, InvalidKeyException, NoSuchAlgorithmException, InterruptedException {
         /*System.out.println(Validator.validateComune("Roma"));
         System.out.println(Validator.validateComune("Pippo"));
         System.out.println(Validator.validateCodiceFiscale("PCGAAA87SD"));
@@ -46,8 +46,27 @@ public class Main {
         System.out.println(u.getKeyPair()); */
 
         Utente u = new Utente("Marco", "Adriani", LocalDate.of(1993, 9, 17), "via Fasulla 123", "Roma", "ABCDFG45A73P883B", "marco@gmail.com", "369852147", "qwerty");
+        Utente u2 = new Utente("Anna", "Rossi", LocalDate.of(1985, 5, 2), "via Evergreen Terrace 19", "Milano", "ABCDFG45A73P883B", "anna@gmail.com", "321456879", "password");
         Database.addUtente(u);
-        u.createTransaction(100, 1, 2);
+        Database.addUtente(u2);
+        List<Integer> utenti_c1 = new ArrayList<>();
+        List<Integer> utenti_c2 = new ArrayList<>();
+        utenti_c1.add(u.getId());
+        utenti_c2.add(u2.getId());
+        Conto c1 = new Conto(0.5, 1000, utenti_c1);
+        Conto c2 = new Conto(0.5, 800, utenti_c2);
+        u.addConto(c1.getId());
+        u2.addConto(c2.getId());
+        Database.addConto(c1);
+        Database.addConto(c2);
+        Transazione t = u.createTransaction(100, 0, 1);
+        Transazione t1 = u.createTransaction(700, 0, 1);
+
+        Thread.sleep(1000);
+        System.out.println("Il conto di u adesso ha: " + c1.getMoney());
+        System.out.println("Il conto di u2 adesso ha: " + c2.getMoney());
+        System.out.println(t);
+        System.out.println(t1);
 
 
 

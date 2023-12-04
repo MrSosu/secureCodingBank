@@ -5,6 +5,7 @@ import exceptions.UtenteMismatchException;
 import services.IDService;
 import services.SignatureService;
 import services.ValidatorService;
+import thread.TransactionThread;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -176,7 +177,7 @@ public class Utente {
      * @param id_conto_destinatario l'id del conto del destinatario
      * @return la transazione
      */
-    public Transazione createTransaction(double money, int id_conto_mittente, int id_conto_destinatario) throws UnsupportedEncodingException, InvalidKeyException, SignatureException, NoSuchAlgorithmException {
+    public synchronized Transazione createTransaction(double money, int id_conto_mittente, int id_conto_destinatario) throws UnsupportedEncodingException, InvalidKeyException, SignatureException, NoSuchAlgorithmException {
         // input validation
         if (!isLoggedIn) {
             System.out.println("Devi essere loggato per poter eseguire questa funzionalità!");
@@ -196,18 +197,11 @@ public class Utente {
         if (conto_mittente.getMoney() < money) {
             throw new IllegalArgumentException("Il conto non ha abbastanza denaro");
         }
-        // logica
-        Conto conto_destinatario = Database.getConti().get(id_conto_destinatario);
-        conto_destinatario.addMoney(money);
-        conto_mittente.subtractMoney(money);
-        // creo la transazione, compresa di firma
-
-        Transazione t = new Transazione(id_conto_mittente, id_conto_destinatario, this.id, money);
-        String str_transaction = String.valueOf(t.hashCode());
-        System.out.println(str_transaction);
-        t.setSignature(SignatureService.sign(str_transaction.getBytes(), keyPair.getPrivate()));
-        Database.addTransazione(t);
-        return t;
+        TransactionThread myThread = new TransactionThread(this, id_conto_mittente, id_conto_destinatario, money);
+        myThread.start();
+        System.out.println(myThread.getTransazione());
+        return myThread.getTransazione();
     }
+
 
 }
